@@ -9,15 +9,15 @@
   <title>Магазин. ДЗ №2</title>
 </head>
 <body>
-  <div id="app">
+  <div id="app" class="container">
     <header>
-        <nav class="navbar">        
+      <nav class="navbar">         
         <form action="/" class="form-inline goods-search">
-          <input type="search" class="form-control search-input" v-model="searchLine">
-          <button class="btn btn-primary search-button " @click="filter_Goods">Искать</button> 
-          <button class="btn btn-primary" @click="changeVisibleCart">Корзина</button> 
-        </form>        
-      </nav>     
+          <input-search-good v-model="searchLine"></input-search-good>
+          <button-search @update-search="filterGoods">НАЙТИ</button-search>
+        </form> 
+      </nav>
+      <button-cart @update-value="changeVisibleCart">Корзина</button-cart>                  
     </header>
     <main>
       <div class="goods-list">

@@ -46,8 +46,13 @@ class GoodsList {
       return sumGoods += Number(good.price)
     },0)
   }
-  
-  //// дальше посмотреть GoodsList
+  render() {
+    const listHtml = this.filteredGoods.reduce((acc, good) => {
+      const goodItem = new GoodsItem(good.product_name, good.price);
+      return acc += goodItem.render();
+    }, '');
+    document.querySelector(this.el).innerHTML = listHtml;
+  }
 }
 
 class Cart extends GoodsList {
@@ -60,11 +65,10 @@ class Cart extends GoodsList {
 
   fetchGoods() {
     return makeGETRequest(`${API_URL}/getBasket.json`).then((res) => {
-
-    });
+      const cart = JSON.parse(res);
+      this.goods = cart.content;
+    }).catch(e => e);
   }
-  // дальше посмотреть
-
 }
 
 class CartItem extends GoodsItem {
@@ -93,7 +97,31 @@ const init = async () => {
   }
 };
 
-//init();
+Vue.component('input-search-good', {
+  template: `
+      <input type="search" placeholder="Найти" class="form-control search-input" v-model="inputVal">
+  `,
+  props: ['value'],
+  data() {
+    return { inputVal: this.value }
+  },
+  watch: {
+    inputVal(val) {
+      this.$emit('input', val);
+    }
+  }
+})
+Vue.component('button-search', {
+  template: `
+  <button class="btn btn-primary" @click="$emit(\'update-search\')"><slot></slot></button> 
+  `
+});
+
+Vue.component('button-cart', {
+  template: `
+  <button class="btn btn-primary" @click="$emit(\'update-value\')"><slot></slot></button>
+  `
+});
 
 const app = new Vue({
   el: '#app',
@@ -127,23 +155,20 @@ const app = new Vue({
         xhr.send();
       })  
     },
-    filter_Goods() {
+    filterGoods() {
       const regexp = new RegExp(this.searchLine, 'i');
       this.filteredGoods = this.goods.filter(good => {  
         return regexp.test(good.product_name); 
       })
-      console.log(this.searchLine);
     },
     changeVisibleCart() {
-      this.isVisibleCart = (this.isVisibleCart === false )? true: false; 
+      this.isVisibleCart = !this.isVisibleCart; 
     }
   },
   async mounted() {
     const goods = await this.makeGETRequest(`${API_URL}/catalogData.json`);
-    // console.log(JSON.parse(goods));
     this.goods = goods;
-    this.filteredGoods = goods;
-    console.log(app);  
+    this.filteredGoods = goods; 
   }
 })
 
