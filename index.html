@@ -9,18 +9,19 @@
   <title>Магазин. ДЗ №2</title>
 </head>
 <body>
-  <div id="app">
+  <div id="app" class="container">
     <header>
-        <nav class="navbar">        
+      <nav class="navbar">         
         <form action="/" class="form-inline goods-search">
-          <input type="search" class="form-control search-input" v-model="searchLine">
-          <button class="btn btn-primary search-button " @click="filter_Goods">Искать</button> 
-          <button class="btn btn-primary" @click="changeVisibleCart">Корзина</button> 
-        </form>        
-      </nav>     
+          <input-search-good v-model="searchLine"></input-search-good>
+          <button-search @update-search="filterGoods">НАЙТИ</button-search>
+        </form> 
+      </nav>
+      <button-cart @update-value="changeVisibleCart">Корзина</button-cart>                  
     </header>
     <main>
-      <div class="goods-list">
+        <goods-list :goods="filteredGoods" @add-to-cart="addToCart"></goods-list> 
+      <!-- <div class="goods-list">
           <div class="goods-item" v-for='good in filteredGoods'>
             <img src="" alt="" class="good-img">
             <h3 class="good-subtitle">{{ good.product_name }}</h3>
@@ -28,9 +29,10 @@
             <button class="btn btn-primary btn-add-cart">Добавить</button>
           </div>
           <p v-show="goods.length === 0">Товара нет<p></p>
-      </div>
-      <!-- Модальное окно -->
-      <div class="modal cart-modal" v-if="isVisibleCart">
+      </div> -->
+      <cart ref="cart"></cart>
+      <!-- Модальное окно 
+      <div class="modal cart-modal" v-show="isVisibleCart">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -49,10 +51,10 @@
           </div>  
         </div>  
       </div>
-      <!-- /модальное окно-->
+       /модальное окно-->
     </main>  
   </div>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <script src="script.js"></script>
+  <script src="./dist/build.js"></script>
 </body>
 </html>
